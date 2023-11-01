@@ -27,6 +27,7 @@ impl Server {
     }
 
     fn handle_request(request: &str) {
+        let request = request.split_once("\0").unwrap().0;
         let message: Message = serde_json::from_str(&request).unwrap();
 
         println!("{:#?}", message);
