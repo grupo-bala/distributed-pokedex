@@ -2,6 +2,6 @@
 resolver = "2"
 
 members = [
-    "pokedex-server",
-    "pokedex-macros"
+    "pokedex_server",
+    "pokedex_macros"
 ]
