@@ -1,9 +1,4 @@
-from model.pokemon import Pokemon
-from model.user import User
-import jsonpickle
+from network.client import Client
 
-pikachu = Pokemon("Pikachu", ["ELETRIC"], ["WATER"], 2, 4, 3, 4, 3, 4)
-user = User("ash", "123")
-
-print(jsonpickle.encode(pikachu, unpicklable=False))
-print(jsonpickle.encode(user, unpicklable=False))
+client = Client("127.0.0.1:9090")
+client.send_message()
