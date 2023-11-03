@@ -119,7 +119,7 @@ fn generate_skeleton_impl(
     let definition = quote! {
         #input
 
-        struct #skeleton_ident;
+        pub struct #skeleton_ident;
 
         impl #skeleton_ident {
             #(#skeleton_methods)*
