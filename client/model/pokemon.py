@@ -7,8 +7,8 @@ class Pokemon:
     types: list[Type]
     weakness: list[Type]
     hp: int
-    atk: int
+    attack: int
     defense: int
-    specialAtk: int
-    specialDef: int
+    special_atk: int
+    special_def: int
     speed: int
