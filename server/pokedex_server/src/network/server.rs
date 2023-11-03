@@ -1,6 +1,6 @@
 use std::net::UdpSocket;
 
-use super::message::Message;
+use super::{message::Message, dispatcher::Dispatcher};
 
 pub struct Server {
     socket: UdpSocket,
@@ -30,6 +30,10 @@ impl Server {
         let request = request.split_once("\0").unwrap().0;
         let message: Message = serde_json::from_str(&request).unwrap();
 
-        println!("{:#?}", message);
+        Dispatcher::execute(
+            &message.object_reference,
+            &message.method_id,
+            &message.arguments
+        );
     }
 }
