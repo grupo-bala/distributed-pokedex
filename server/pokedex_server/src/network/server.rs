@@ -19,9 +19,9 @@ impl Server {
     }
 
     pub fn listen(&mut self) {
-        let mut buf = [0u8; 1024];
-
         loop {
+            let mut buf = [0u8; 1024];
+            
             match self.socket.recv_from(&mut buf) {
                 Err(e) => println!("Falha no recebimento: {:?}", e),
                 Ok((_, addr)) => {
