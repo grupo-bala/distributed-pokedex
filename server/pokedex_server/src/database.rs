@@ -40,7 +40,7 @@ impl Database {
         Database { connection }
     }
 
-    pub fn add_pokemon(&mut self, user: User, pokemon: Pokemon) {
+    pub fn add_pokemon(&mut self, user: &User, pokemon: &Pokemon) {
         let mut statement = self.connection.prepare(
             "INSERT INTO pokemon (name, types, weakness, hp, attack, defense, special_atk, special_def, speed, user_username) VALUES (
                 ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
