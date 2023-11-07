@@ -1,8 +1,9 @@
-use std::net::UdpSocket;
+use std::{net::{UdpSocket, SocketAddr}, collections::HashMap};
 
 use super::{message::Message, dispatcher::Dispatcher};
 
 pub struct Server {
+    last_request: HashMap<SocketAddr, i32>,
     socket: UdpSocket,
 }
 
@@ -11,29 +12,52 @@ impl Server {
         let socket = UdpSocket::bind(addr)
             .expect("Não foi possível inicializar o socket UDP");
 
-        Server { socket }
+        Server {
+            last_request: HashMap::new(),
+            socket
+        }
     }
 
     pub fn listen(&mut self) {
         let mut buf = [0u8; 1024];
 
         loop {
-            if let Err(e) = self.socket.recv(&mut buf) {
-                println!("Falha no recebimento: {:?}", e);
+            match self.socket.recv_from(&mut buf) {
+                Err(e) => println!("Falha no recebimento: {:?}", e),
+                Ok((_, addr)) => {
+                    self.handle_request(
+                        &addr,
+                        &String::from_utf8(buf.to_vec()).unwrap()
+                    );
+                }
             }
-
-            Self::handle_request(&String::from_utf8(buf.to_vec()).unwrap());
         }
     }
 
-    fn handle_request(request: &str) {
+    fn handle_request(&mut self, addr: &SocketAddr, request: &str) {
         let request = request.split_once("\0").unwrap().0;
         let message: Message = serde_json::from_str(&request).unwrap();
+        
+        if self.handle_duplicate(addr, message.request_id) {
+            println!("Mensagem duplicada de: {addr:?}");
+            return;
+        }
 
-        Dispatcher::execute(
+        let result = Dispatcher::execute(
             &message.object_reference,
             &message.method_id,
             &message.arguments
         );
+
+        self.socket.send_to(result.as_bytes(), addr).unwrap();
+    }
+
+    fn handle_duplicate(&mut self, addr: &SocketAddr, id: i32) -> bool {
+        if let Some(_) = self.last_request.get(addr) {
+            return true;
+        } else {
+            self.last_request.insert(addr.clone(), id);
+            return false;
+        }
     }
 }
