@@ -43,21 +43,16 @@ impl Server {
             return;
         }
 
-        let result = Dispatcher::execute(
-            &message.object_reference,
-            &message.method_id,
-            &message.arguments
-        );
-
+        let result = Dispatcher::execute(&message);
         self.socket.send_to(result.as_bytes(), addr).unwrap();
     }
 
     fn handle_duplicate(&mut self, addr: &SocketAddr, id: i32) -> bool {
-        if let Some(_) = self.last_request.get(addr) {
-            return true;
+        return if let Some(_) = self.last_request.get(addr) {
+            true
         } else {
             self.last_request.insert(addr.clone(), id);
-            return false;
+            false
         }
     }
 }

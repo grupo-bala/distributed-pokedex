@@ -16,7 +16,7 @@ pub fn generate_dispatcher(_attrs: TokenStream, tokens: TokenStream) -> TokenStr
         let skeleton = format_ident!("{}Skeleton", ident);
 
         quote! {
-            stringify!(#ident) => #skeleton::execute(method, args)
+            stringify!(#ident) => #skeleton::execute(&msg.method_id, &msg.arguments)
         }
     });
 
@@ -24,11 +24,32 @@ pub fn generate_dispatcher(_attrs: TokenStream, tokens: TokenStream) -> TokenStr
         #parsed
 
         impl #struct_name {
-            pub fn execute(object: &str, method: &str, args: &str) -> String {
-                match object {
+            pub fn execute(msg: &Message) -> String {
+                let output = match msg.object_reference.as_str() {
                     #(#braces),*,
                     _ => panic!("Object does not exists")
-                }
+                };
+
+                let result = match output {
+                    Ok(res) => Result {
+                        status: ResultStatus::Ok,
+                        result: res
+                    },
+                    Err(e) => Result {
+                        status: ResultStatus::Error,
+                        result: e
+                    }
+                };
+
+                let response = Message {
+                    msg_type: 1,
+                    request_id: msg.request_id,
+                    object_reference: msg.object_reference.clone(),
+                    method_id: msg.method_id.clone(),
+                    arguments: serde_json::to_string(&result).unwrap(),
+                };
+
+                serde_json::to_string(&response).unwrap()
             }
         }
     };
@@ -75,7 +96,7 @@ fn generate_execute_method(fns: &Vec<&Signature>) -> proc_macro2::TokenStream {
     });
 
     let execute_method = quote! {
-        pub fn execute(method: &str, args: &str) -> String {
+        pub fn execute(method: &str, args: &str) -> Result<String, String> {
             match method {
                 #(#execute_implementations),*,
                 _ => panic!("Method does not exists")
@@ -106,11 +127,12 @@ fn generate_skeleton_impl(
         });
 
         quote! {
-            pub fn #ident(args: &str) -> String {
+            pub fn #ident(args: &str) -> Result<String, String> {
                 let args: #input_struct_ident = serde_json::from_str(args).unwrap();
-                let output = #struct_ident::#ident(#(args.#args),*);
+                let output = #struct_ident::#ident(#(args.#args),*)
+                    .map(|res| serde_json::to_string(&res).unwrap());
 
-                return serde_json::to_string(&output).unwrap();
+                return output;
             }
         }
     });

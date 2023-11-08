@@ -7,7 +7,7 @@ pub struct Authenticator;
 
 #[generate_skeleton]
 impl Authenticator {
-    fn register(user: User) {
+    fn register(user: User) -> Result<(), String> {
         let db = CONNECTION.lock().unwrap();
         let mut statement = db.connection.prepare(
             "INSERT INTO user VALUES (?, ?);"
@@ -16,11 +16,15 @@ impl Authenticator {
         statement.bind(1, user.username.as_str()).unwrap();
         statement.bind(2, user.password.as_str()).unwrap();
     
-        statement.next().unwrap();
+        if let Err(_) = statement.next() {
+            return Err("Nome de usuário já existe".to_string());
+        }
+
         println!("{} registrado!", user.username);
+        Ok(())
     }
     
-    fn login(user: User) -> bool {
+    fn login(user: User) -> Result<(), String> {
         let db = CONNECTION.lock().unwrap();
         let mut statement = db.connection.prepare(
             "SELECT * FROM user WHERE username = ? AND password = ?;"
@@ -31,9 +35,9 @@ impl Authenticator {
     
         if let State::Row = statement.next().unwrap() {
             println!("{} logado!", user.username);
-            true
+            Ok(())
         } else {
-            false
+            Err("Credenciais inválidas".to_string())
         }
     }
 }

@@ -6,7 +6,7 @@ pub struct Pokedex;
 
 #[generate_skeleton]
 impl Pokedex {
-    fn add_pokemon(user: User, pokemon: Pokemon) {
+    fn add_pokemon(user: User, pokemon: Pokemon) -> Result<(), String> {
         let db = CONNECTION.lock().unwrap();
         let mut statement = db.connection.prepare(
             "INSERT INTO pokemon (name, types, weakness, hp, attack, defense, special_atk, special_def, speed, user_username) VALUES (
@@ -38,5 +38,6 @@ impl Pokedex {
         statement.bind(10, user.username.as_str()).unwrap();
 
         statement.next().unwrap();
+        Ok(())
     }
 }
