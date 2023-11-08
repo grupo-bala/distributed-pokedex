@@ -4,6 +4,5 @@ from util.proxy import proxy
 
 class Pokedex:
     def add_pokemon(self, user: User, pokemon: Pokemon):
-        data = proxy.do_operation("Pokedex", "add_pokemon", { "user": user, "pokemon": pokemon })
+        proxy.do_operation("Pokedex", "add_pokemon", { "user": user, "pokemon": pokemon })
         
-        print(data)
