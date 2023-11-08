@@ -1,7 +1,7 @@
 from model.user import User
 from network.message import Message
 from network.client import Client
-from services.id_handler import id_handler
+from proxy.id_handler import id_handler
 import jsonpickle
 
 class Authenticator:
