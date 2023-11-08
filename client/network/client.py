@@ -9,10 +9,10 @@ class Client:
         self.server_addr = (ip, int(port))
     
     def send_message(self, msg: str) -> bytes:
+        self.socket.sendto(msg.encode("utf-8"), self.server_addr)
+            
+    def recieve_message(self) -> bytes:
         while True:
-            try:
-                self.socket.sendto(msg.encode("utf-8"), self.server_addr)
-                data = self.socket.recv(1024)
-                return data
-            except TimeoutError:
-                continue
+            data = self.socket.recv(1024)
+            
+            return data
