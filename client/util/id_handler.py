@@ -1,4 +1,6 @@
-class IdHandler:
+from util.singleton import SingletonMeta
+
+class IdHandler(metaclass=SingletonMeta):
     def __init__(self) -> None:
         self.__next_id = -1
     
