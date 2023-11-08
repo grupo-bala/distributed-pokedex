@@ -1,6 +1,7 @@
+from util.singleton import SingletonMeta
 import socket as sk
 
-class Client:
+class Client(metaclass=SingletonMeta):
     def __init__(self, server_addr: str) -> None:
         self.socket = sk.socket(sk.AF_INET, sk.SOCK_DGRAM)
         self.socket.settimeout(2.0)
@@ -16,3 +17,5 @@ class Client:
             data = self.socket.recv(1024)
             
             return data
+        
+client = Client("127.0.0.1:9090")
