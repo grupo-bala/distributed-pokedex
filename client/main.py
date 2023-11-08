@@ -1,5 +1,5 @@
-from services.pokedex import Pokedex
-from services.authenticator import Authenticator
+from proxy.pokedex import Pokedex
+from proxy.authenticator import Authenticator
 from model.pokemon import Pokemon
 from model.user import User
 
