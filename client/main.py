@@ -6,7 +6,7 @@ from model.user import User
 pokedex = Pokedex()
 auth = Authenticator()
 
-user = User("ash_ketchum", "123")
+user = User("higo", "123")
 pokemon = Pokemon("Pikachu", ["ELETRIC"], ["GROUND"], 3, 4, 3, 3, 3, 6)
 
 auth.register(user)

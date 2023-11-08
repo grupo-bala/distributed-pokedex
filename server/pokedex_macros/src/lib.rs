@@ -43,7 +43,7 @@ pub fn generate_dispatcher(_attrs: TokenStream, tokens: TokenStream) -> TokenStr
 
                 let response = Message {
                     msg_type: 1,
-                    request_id: msg.request_id,
+                    id: msg.id,
                     object_reference: msg.object_reference.clone(),
                     method_id: msg.method_id.clone(),
                     arguments: serde_json::to_string(&result).unwrap(),

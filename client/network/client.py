@@ -9,10 +9,10 @@ class Client(metaclass=SingletonMeta):
         (ip, port) = server_addr.split(":")
         self.server_addr = (ip, int(port))
     
-    def send_message(self, msg: str) -> bytes:
+    def send_message(self, msg: str):
         self.socket.sendto(msg.encode("utf-8"), self.server_addr)
             
-    def recieve_message(self) -> bytes:
+    def receive_message(self) -> bytes:
         while True:
             data = self.socket.recv(1024)
             

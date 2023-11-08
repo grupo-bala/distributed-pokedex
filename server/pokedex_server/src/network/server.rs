@@ -38,7 +38,7 @@ impl Server {
         let request = request.split_once("\0").unwrap().0;
         let message: Message = serde_json::from_str(&request).unwrap();
         
-        if self.handle_duplicate(addr, message.request_id) {
+        if self.handle_duplicate(addr, message.id) {
             println!("Mensagem duplicada de: {addr:?}");
             return;
         }
@@ -48,8 +48,8 @@ impl Server {
     }
 
     fn handle_duplicate(&mut self, addr: &SocketAddr, id: i32) -> bool {
-        return if let Some(_) = self.last_request.get(addr) {
-            true
+        return if let Some(last_id) = self.last_request.get(addr) {
+            *last_id == id
         } else {
             self.last_request.insert(addr.clone(), id);
             false
