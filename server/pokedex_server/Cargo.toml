@@ -12,3 +12,4 @@ pokedex_macros = { path = "../pokedex_macros"}
 serde = { version = "1.0.190", features = ["derive"] }
 serde_json = "1.0.107"
 sqlite3 = "0.24.0"
+strum = { version = "0.25", features = ["derive"] }

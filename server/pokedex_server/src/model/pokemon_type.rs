@@ -1,7 +1,8 @@
 use derive_more::Display;
 use serde::{Serialize, Deserialize};
+use strum::EnumString;
 
-#[derive(Debug, Clone, Display, Serialize, Deserialize)]
+#[derive(Debug, Clone, Display, Serialize, Deserialize, EnumString)]
 pub enum Type {
     NORMAL,
     FIRE,
