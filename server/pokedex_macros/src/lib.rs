@@ -3,8 +3,11 @@ use quote::{quote, format_ident};
 use syn::{parse_macro_input, ItemImpl, ImplItem, Type, Ident, Signature, FnArg, Pat, ItemStruct};
 
 mod data;
+mod util;
 
 use data::DispatcherArgs;
+
+use crate::util::format_camel_case;
 
 #[proc_macro_attribute]
 pub fn generate_dispatcher(_attrs: TokenStream, tokens: TokenStream) -> TokenStream {
@@ -113,7 +116,8 @@ fn generate_skeleton_impl(
     let execute_method = generate_execute_method(&fns);
     let skeleton_methods = fns.iter().map(|sig| {
         let ident = &sig.ident;
-        let input_struct_ident = format_ident!("Input{}", ident);
+        let camel_case_ident = format_camel_case(&ident.to_string());
+        let input_struct_ident = format_ident!("Input{}", camel_case_ident);
         let args = sig.inputs.iter().filter_map(|input| {
             if let FnArg::Typed(arg) = input {
                 if let Pat::Ident(name) = arg.pat.as_ref() {
@@ -163,7 +167,8 @@ fn generate_args_structs(fns: &Vec<&Signature>) -> proc_macro2::TokenStream {
             }
         });
 
-        let struct_name = format_ident!("Input{}", f.ident);
+        let camel_case_ident = format_camel_case(&f.ident.to_string());
+        let struct_name = format_ident!("Input{}", camel_case_ident);
 
         quote! {
             #[derive(serde::Serialize, serde::Deserialize)]
