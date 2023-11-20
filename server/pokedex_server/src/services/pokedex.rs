@@ -2,12 +2,17 @@ use pokedex_macros::generate_skeleton;
 
 use crate::{model::{user::User, pokemon::Pokemon}, database::CONNECTION};
 
+use super::authenticator::Authenticator;
+
 pub struct Pokedex;
 
 #[generate_skeleton]
 impl Pokedex {
     fn add_pokemon(user: User, pokemon: Pokemon) -> Result<(), String> {
+        Authenticator::login(user.clone())?;
+
         let db = CONNECTION.lock().unwrap();
+
         let mut statement = db.connection.prepare(
             "INSERT INTO pokemon (name, types, weakness, hp, attack, defense, special_atk, special_def, speed, user_username) VALUES (
                 ?, ?, ?, ?, ?, ?, ?, ?, ?, ?

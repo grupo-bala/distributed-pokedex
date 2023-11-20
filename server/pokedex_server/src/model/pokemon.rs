@@ -2,7 +2,7 @@ use serde::{Serialize, Deserialize};
 
 use super::pokemon_type::Type;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Pokemon {
     pub name: String,
     pub types: Vec<Type>,

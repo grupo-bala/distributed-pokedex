@@ -1,7 +1,7 @@
 use derive_more::Display;
 use serde::{Serialize, Deserialize};
 
-#[derive(Debug, Display, Serialize, Deserialize)]
+#[derive(Debug, Clone, Display, Serialize, Deserialize)]
 pub enum Type {
     NORMAL,
     FIRE,

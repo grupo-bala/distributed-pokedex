@@ -7,7 +7,7 @@ pub struct Authenticator;
 
 #[generate_skeleton]
 impl Authenticator {
-    fn register(user: User) -> Result<(), String> {
+    pub fn register(user: User) -> Result<(), String> {
         let db = CONNECTION.lock().unwrap();
         let mut statement = db.connection.prepare(
             "INSERT INTO user VALUES (?, ?);"
@@ -24,7 +24,7 @@ impl Authenticator {
         Ok(())
     }
     
-    fn login(user: User) -> Result<(), String> {
+    pub fn login(user: User) -> Result<(), String> {
         let db = CONNECTION.lock().unwrap();
         let mut statement = db.connection.prepare(
             "SELECT * FROM user WHERE username = ? AND password = ?;"
