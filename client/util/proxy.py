@@ -25,7 +25,7 @@ class Proxy(metaclass=SingletonMeta):
                 if result.status == "Error":
                     raise Exception(result.result)
 
-                return jsonpickle.decode(unpacked_msg.arguments)
+                return jsonpickle.decode(result.result)
             except TimeoutError:
                 client.send_message(packed_msg)
     
