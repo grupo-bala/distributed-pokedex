@@ -14,7 +14,7 @@ impl Pokedex {
     pub fn add_pokemon(user: User, pokemon: Pokemon) -> Result<(), String> {
         let found_pokemons = Self::search_pokemon(user.clone(), pokemon.name.clone())?;
 
-        if found_pokemons.len() > 0 {
+        if !found_pokemons.is_empty() {
             return Err("Pokémon já existe na pokédex".to_string());
         }
 
@@ -96,7 +96,7 @@ impl Pokedex {
     fn remove_pokemon(user: User, name: String) -> Result<(), String> {
         let found_pokemons = Self::search_pokemon(user.clone(), name.clone())?;
 
-        if found_pokemons.len() < 1 {
+        if found_pokemons.is_empty() {
             return Err("Pokémon não existe".to_string())
         }
 

@@ -39,6 +39,12 @@ impl DBConnection {
     }
 }
 
+impl Default for DBConnection {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 lazy_static! {
     pub static ref CONNECTION: Mutex<DBConnection> = Mutex::new(DBConnection::new());
 }

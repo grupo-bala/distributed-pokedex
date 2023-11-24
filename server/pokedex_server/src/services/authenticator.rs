@@ -16,7 +16,7 @@ impl Authenticator {
         statement.bind(1, user.username.as_str()).unwrap();
         statement.bind(2, user.password.as_str()).unwrap();
     
-        if let Err(_) = statement.next() {
+        if statement.next().is_err() {
             return Err("Nome de usuário já existe".to_string());
         }
 

@@ -5,12 +5,12 @@ pub fn make_ascii_titlecase(s: &mut str) {
 }
 
 pub fn format_camel_case(s: &str) -> String {
-    let mut words: Vec<_> = s.split("_")
+    let mut words: Vec<_> = s.split('_')
         .map(|s| { s.to_string() })
         .collect();
 
-    for mut word in words.iter_mut() {
-        make_ascii_titlecase(&mut word);
+    for word in words.iter_mut() {
+        make_ascii_titlecase(word);
     }
 
     words.join("")

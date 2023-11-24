@@ -89,7 +89,7 @@ pub fn generate_skeleton(_attrs: TokenStream, tokens: TokenStream) -> TokenStrea
     TokenStream::from(definitions)
 }
 
-fn generate_execute_method(fns: &Vec<&Signature>) -> proc_macro2::TokenStream {
+fn generate_execute_method(fns: &[&Signature]) -> proc_macro2::TokenStream {
     let execute_implementations = fns.iter().map(|sig| {
         let ident = &sig.ident;
 
@@ -111,9 +111,9 @@ fn generate_execute_method(fns: &Vec<&Signature>) -> proc_macro2::TokenStream {
 }
 
 fn generate_skeleton_impl(
-    input: &ItemImpl, struct_ident: &Ident, fns: &Vec<&Signature>
+    input: &ItemImpl, struct_ident: &Ident, fns: &[&Signature]
 ) -> proc_macro2::TokenStream {
-    let execute_method = generate_execute_method(&fns);
+    let execute_method = generate_execute_method(fns);
     let skeleton_methods = fns.iter().map(|sig| {
         let ident = &sig.ident;
         let camel_case_ident = format_camel_case(&ident.to_string());
@@ -157,7 +157,7 @@ fn generate_skeleton_impl(
     definition
 }
 
-fn generate_args_structs(fns: &Vec<&Signature>) -> proc_macro2::TokenStream {
+fn generate_args_structs(fns: &[&Signature]) -> proc_macro2::TokenStream {
     let structs = fns.iter().map(|f| {
         let args = f.inputs.iter().filter_map(|arg| {
             if let FnArg::Typed(arg) = arg {
