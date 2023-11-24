@@ -11,7 +11,7 @@ pub struct Pokedex;
 
 #[generate_skeleton]
 impl Pokedex {
-    fn add_pokemon(user: User, pokemon: Pokemon) -> Result<(), String> {
+    pub fn add_pokemon(user: User, pokemon: Pokemon) -> Result<(), String> {
         let found_pokemons = Self::search_pokemon(user.clone(), pokemon.name.clone())?;
 
         if found_pokemons.len() > 0 {
@@ -53,7 +53,7 @@ impl Pokedex {
         Ok(())
     }
 
-    fn search_pokemon(user: User, name: String) -> Result<Vec<Pokemon>, String> {
+    pub fn search_pokemon(user: User, name: String) -> Result<Vec<Pokemon>, String> {
         Authenticator::login(user.clone())?;
 
         let db = CONNECTION.lock().unwrap();
@@ -68,23 +68,23 @@ impl Pokedex {
         let mut pokemons = Vec::new();
         while let State::Row = statement.next().unwrap() {
             let pokemon = Pokemon {
-                name: statement.read(0).unwrap(),
-                types: statement.read::<String>(1)
+                name: statement.read(1).unwrap(),
+                types: statement.read::<String>(2)
                     .unwrap()
                     .split(", ")
                     .map(|t| { Type::from_str(t).unwrap() })
                     .collect(),
-                weakness: statement.read::<String>(2)
+                weakness: statement.read::<String>(3)
                     .unwrap()
                     .split(", ")
                     .map(|w| { Type::from_str(w).unwrap() })
                     .collect(),
-                hp: statement.read::<i64>(3).unwrap() as i32,
-                attack: statement.read::<i64>(4).unwrap() as i32,
-                defense: statement.read::<i64>(5).unwrap() as i32,
-                special_atk: statement.read::<i64>(6).unwrap() as i32,
-                special_def: statement.read::<i64>(7).unwrap() as i32,
-                speed: statement.read::<i64>(8).unwrap() as i32
+                hp: statement.read::<i64>(4).unwrap() as i32,
+                attack: statement.read::<i64>(5).unwrap() as i32,
+                defense: statement.read::<i64>(6).unwrap() as i32,
+                special_atk: statement.read::<i64>(7).unwrap() as i32,
+                special_def: statement.read::<i64>(8).unwrap() as i32,
+                speed: statement.read::<i64>(9).unwrap() as i32
             };
 
             pokemons.push(pokemon);
