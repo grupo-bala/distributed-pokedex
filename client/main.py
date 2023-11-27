@@ -210,9 +210,12 @@ def add_pokemon():
         pokedex.add_pokemon(user, pokemon)
 
         cprint("Pokemon adicionado!", "green")
+
         input("Pressione enter para continuar...")
     except Exception as e:
-        cprint(f"{str(e)}\n\n", "red")
+        cprint(f"{str(e)}\n", "red")
+
+        input("Pressione enter para continuar...")
 
 
 def remove_pokemon():
