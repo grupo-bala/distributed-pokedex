@@ -14,6 +14,8 @@ impl Pokedex {
     pub fn add_pokemon(user: User, pokemon: Pokemon) -> Result<(), String> {
         let found_pokemons = Self::search_pokemon(user.clone(), pokemon.name.clone())?;
 
+        println!("[{}]: add_pokemon({:?})", user.username, pokemon);
+
         if !found_pokemons.is_empty() {
             return Err("Pokémon já existe na pokédex".to_string());
         }
@@ -50,11 +52,14 @@ impl Pokedex {
         statement.bind(10, user.username.as_str()).unwrap();
 
         statement.next().unwrap();
+
         Ok(())
     }
 
     pub fn search_pokemon(user: User, name: String) -> Result<Vec<Pokemon>, String> {
         Authenticator::login(user.clone())?;
+
+        println!("[{}]: search_pokemon('{}')", user.username, name);
 
         let db = CONNECTION.lock().unwrap();
 
@@ -98,6 +103,8 @@ impl Pokedex {
     fn remove_pokemon(user: User, name: String) -> Result<(), String> {
         let found_pokemons = Self::search_pokemon(user.clone(), name.clone())?;
 
+        println!("[{}]: remove_pokemon('{}')", user.username, name);
+        
         if found_pokemons.is_empty() {
             return Err("Pokémon não existe".to_string())
         }
@@ -111,6 +118,7 @@ impl Pokedex {
         statement.bind(2, name.as_str()).unwrap();
 
         statement.next().unwrap();
+
         Ok(())
     }
 }
