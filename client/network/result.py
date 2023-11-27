@@ -1,10 +1,8 @@
 from dataclasses import dataclass
 from typing import Literal
 
-ResultStatus = Literal[
-    "Ok",
-    "Error"
-]
+ResultStatus = Literal["Ok", "Error"]
+
 
 @dataclass
 class Result:

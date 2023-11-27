@@ -23,6 +23,7 @@ terminal.clear_terminal()
 
 user = None
 
+
 def login():
     print("Credeciais para o login...")
 
@@ -53,6 +54,7 @@ def login():
         input("Pressione enter para continuar...")
 
         return False
+
 
 def register():
     print("Credencais para o registro...")
@@ -86,6 +88,7 @@ def register():
 
         return False
 
+
 while True:
     option = input("Deseja fazer login ou registrar(login/registrar)? ").lower()
 
@@ -104,10 +107,11 @@ while True:
         terminal.clear_terminal()
 
         cprint("Opção inválida!\n", "red")
-        
+
         input("As opções são login ou registrar! Pressione enter para continuar...")
 
     terminal.clear_terminal()
+
 
 def add_pokemon():
     print("Digite o nome do pokemon que será adicionado na ", end="")
@@ -128,7 +132,9 @@ def add_pokemon():
     while True:
         pokemon_type = [
             tp.upper()
-            for tp in input(f"Digite os tipos do {pokemon_name} separados por vírgula: ").split(",")
+            for tp in input(
+                f"Digite os tipos do {pokemon_name} separados por vírgula: "
+            ).split(",")
         ]
 
         has_invalid_type = False
@@ -146,7 +152,7 @@ def add_pokemon():
                 terminal.clear_terminal()
 
                 break
-        
+
         if not has_invalid_type:
             break
 
@@ -163,7 +169,9 @@ def add_pokemon():
     while True:
         weakness = [
             tp.upper()
-            for tp in input(f"Digite os tipos que o {pokemon_name} é fraco contra separados por vírgula: ").split(",")
+            for tp in input(
+                f"Digite os tipos que o {pokemon_name} é fraco contra separados por vírgula: "
+            ).split(",")
         ]
 
         has_invalid_type = False
@@ -181,7 +189,7 @@ def add_pokemon():
                 terminal.clear_terminal()
 
                 break
-        
+
         if not has_invalid_type:
             break
 
@@ -238,6 +246,7 @@ def remove_pokemon():
 
     terminal.clear_terminal()
 
+
 def search_pokemon():
     terminal.clear_terminal()
 
@@ -256,12 +265,14 @@ def search_pokemon():
         cprint(f"{str(e)}\n\n", "red")
 
     input("Pressione enter para continuar...")
-    
+
     terminal.clear_terminal()
 
 
 while True:
-    option = input("Qual o comando que deseja executar(adicionar/remover/buscar/sair)? ").lower()
+    option = input(
+        "Qual o comando que deseja executar(adicionar/remover/buscar/sair)? "
+    ).lower()
 
     if option == "adicionar":
         add_pokemon()
@@ -274,8 +285,10 @@ while True:
     else:
         terminal.clear_terminal()
         cprint("Opção inválida!\n\n", "red")
-        
-        input("As opções válidas são adicionar, remover, buscar ou sair! Pressione enter para continuar...")
+
+        input(
+            "As opções válidas são adicionar, remover, buscar ou sair! Pressione enter para continuar..."
+        )
 
     terminal.clear_terminal()
 
