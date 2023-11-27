@@ -5,16 +5,18 @@ use super::{message::Message, dispatcher::Dispatcher};
 pub struct Server {
     last_request: HashMap<SocketAddr, i32>,
     socket: UdpSocket,
+    is_error_env: bool,
 }
 
 impl Server {
-    pub fn new(addr: &str) -> Self {
+    pub fn new(addr: &str, is_error_env: bool) -> Self {
         let socket = UdpSocket::bind(addr)
             .expect("Não foi possível inicializar o socket UDP");
 
         Server {
             last_request: HashMap::new(),
-            socket
+            socket,
+            is_error_env,
         }
     }
 
@@ -25,10 +27,12 @@ impl Server {
             match self.socket.recv_from(&mut buf) {
                 Err(e) => println!("Falha no recebimento: {:?}", e),
                 Ok((_, addr)) => {
-                    self.handle_request(
-                        &addr,
-                        &String::from_utf8(buf.to_vec()).unwrap()
-                    );
+                    if !self.is_error_env {
+                        self.handle_request(
+                            &addr,
+                            &String::from_utf8(buf.to_vec()).unwrap()
+                        );
+                    }
                 }
             }
         }
