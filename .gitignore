@@ -1,4 +1,5 @@
 server/target
 server/db.sqlite
 client/.mypy_cache
+client/client.log
 *.pyc
