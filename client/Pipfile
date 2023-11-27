@@ -10,6 +10,7 @@ start = "python3 main.py"
 jsonpickle = "*"
 mypy = "*"
 termcolor = "*"
+loguru = "*"
 
 [dev-packages]
 black = "*"
