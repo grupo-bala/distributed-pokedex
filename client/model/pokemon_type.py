@@ -47,6 +47,9 @@ def color_type(type: Type) -> tuple[str]:
         
         return color
 
+def get_types():
+    return get_args(Type)
+
 def list_types():
     for (i, tp) in enumerate(get_args(Type)):
         cprint(f"{tp}", *color_type(tp), end="\n" if i == 17 else ", ")
