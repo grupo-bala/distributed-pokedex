@@ -1,4 +1,5 @@
 from util.singleton import SingletonMeta
+from loguru import logger
 import socket as sk
 
 class Client(metaclass=SingletonMeta):
@@ -7,6 +8,9 @@ class Client(metaclass=SingletonMeta):
         self.socket.settimeout(2.0)
 
         (ip, port) = server_addr.split(":")
+
+        logger.info(f"Client - inicializando cliente com ip: {ip} e porta: {port}")
+
         self.server_addr = (ip, int(port))
     
     def send_message(self, msg: str):

@@ -6,6 +6,10 @@ from model.pokemon_type import list_types, get_types
 from util import terminal
 from getpass import getpass
 from termcolor import cprint
+from loguru import logger
+
+logger.remove()
+logger.add("client.log")
 
 pokedex = Pokedex()
 auth = Authenticator()
