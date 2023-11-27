@@ -13,3 +13,8 @@ class Pokedex:
             return []
         
         return [Pokemon(**pokemon) for pokemon in result]
+    
+    def remove_pokemon(self, user: User, pokemon_name: str):
+        proxy.do_operation("Pokedex", "remove_pokemon", { "user": user, "name": pokemon_name })
+
+        return True
