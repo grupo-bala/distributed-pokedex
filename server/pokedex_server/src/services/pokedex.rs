@@ -59,11 +59,13 @@ impl Pokedex {
         let db = CONNECTION.lock().unwrap();
 
         let mut statement = db.connection.prepare(
-            "SELECT * FROM pokemon WHERE pokemon.user_username = ? AND pokemon.name = ?;"
+            "SELECT * FROM pokemon 
+            WHERE pokemon.user_username = ?
+            AND UPPER(pokemon.name) LIKE UPPER(?);"
         ).unwrap();
 
         statement.bind(1, user.username.as_str()).unwrap();
-        statement.bind(2, name.as_str()).unwrap();
+        statement.bind(2, format!("%{name}%").as_str()).unwrap();
 
         let mut pokemons = Vec::new();
         while let State::Row = statement.next().unwrap() {
