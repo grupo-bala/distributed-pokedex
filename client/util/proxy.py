@@ -6,6 +6,8 @@ from network.result import Result
 from loguru import logger
 import jsonpickle
 
+dup_messages = True
+
 
 class Proxy(metaclass=SingletonMeta):
     def do_operation(self, object_reference: str, method_id: str, args: dict) -> dict:
@@ -19,6 +21,9 @@ class Proxy(metaclass=SingletonMeta):
         logger.info(f"Proxy - packed message: {packed_msg}")
 
         client.send_message(packed_msg)
+
+        if dup_messages:
+            client.send_message(packed_msg)
 
         while True:
             try:

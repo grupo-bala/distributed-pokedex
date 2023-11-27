@@ -2,6 +2,9 @@ from util.singleton import SingletonMeta
 from loguru import logger
 import socket as sk
 
+logger.remove()
+logger.add("client.log")
+
 
 class Client(metaclass=SingletonMeta):
     def __init__(self, server_addr: str) -> None:
