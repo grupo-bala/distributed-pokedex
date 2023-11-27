@@ -1,4 +1,5 @@
 from typing import Literal, get_args
+from termcolor import cprint
 
 Type = Literal[
     "NORMAL",
@@ -48,4 +49,4 @@ def color_type(type: Type) -> tuple[str]:
 
 def list_types():
     for (i, tp) in enumerate(get_args(Type)):
-        print(f"{tp}", end="" if i == 0 else " ")
+        cprint(f"{tp}", *color_type(tp), end="\n" if i == 17 else ", ")
