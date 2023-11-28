@@ -6,7 +6,7 @@ use std::{
 use super::{dispatcher::Dispatcher, message::Message};
 
 pub struct Server {
-    last_request: HashMap<SocketAddr, i32>,
+    last_request: HashMap<SocketAddr, (i32, String)>,
     socket: UdpSocket,
     is_error_env: bool,
 }
@@ -43,18 +43,22 @@ impl Server {
 
         if self.handle_duplicate(addr, message.id) {
             println!("[{addr:?}]: mensagem duplicada");
+            self.socket
+                .send_to(self.last_request.get(addr).unwrap().1.as_bytes(), addr)
+                .unwrap();
+
             return;
         }
 
         let result = Dispatcher::execute(&message);
+        self.last_request.insert(*addr, (message.id, result.clone()));
         self.socket.send_to(result.as_bytes(), addr).unwrap();
     }
 
     fn handle_duplicate(&mut self, addr: &SocketAddr, id: i32) -> bool {
-        return if let Some(last_id) = self.last_request.get(addr) {
-            *last_id == id
+        return if let Some(last_result) = self.last_request.get(addr) {
+            last_result.0 == id
         } else {
-            self.last_request.insert(*addr, id);
             false
         };
     }

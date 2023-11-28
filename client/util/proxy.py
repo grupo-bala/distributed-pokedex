@@ -34,7 +34,7 @@ class Proxy(metaclass=SingletonMeta):
 
                 if unpacked_msg.id != msg_id:
                     logger.error(
-                        "Proxy - ID da mensagem inválido! Unpackad message id: {unpacked_msg.id}, id esperado: {msg_id}"
+                        "Proxy - ID da mensagem inválido! Unpacked message id: {unpacked_msg.id}, id esperado: {msg_id}"
                     )
 
                     continue
