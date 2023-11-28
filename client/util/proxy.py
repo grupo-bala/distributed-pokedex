@@ -6,7 +6,7 @@ from network.result import Result
 from loguru import logger
 import jsonpickle
 
-dup_messages = True
+dup_messages = False
 
 
 class Proxy(metaclass=SingletonMeta):
@@ -24,6 +24,8 @@ class Proxy(metaclass=SingletonMeta):
 
         if dup_messages:
             client.send_message(packed_msg)
+
+        timeout_error_count = 0
 
         while True:
             try:
@@ -50,6 +52,13 @@ class Proxy(metaclass=SingletonMeta):
 
                 return jsonpickle.decode(result.result)
             except TimeoutError:
+                timeout_error_count += 1
+
+                if timeout_error_count == 5:
+                    logger.error("Proxy - timeout na operação: 5 tentativas")
+
+                    raise Exception("O servidor não está respondendo no momento, tente novamente mais tarde.")
+
                 logger.error("Proxy - timeout na operação")
 
                 client.send_message(packed_msg)
