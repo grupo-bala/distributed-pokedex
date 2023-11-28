@@ -43,7 +43,7 @@ impl Server {
         let message: Message = serde_json::from_str(request).unwrap();
         
         if self.handle_duplicate(addr, message.id) {
-            println!("Mensagem duplicada de: {addr:?}");
+            println!("[{addr:?}]: mensagem duplicada");
             return;
         }
 
