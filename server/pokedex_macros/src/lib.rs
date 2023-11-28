@@ -1,6 +1,6 @@
 use proc_macro::TokenStream;
-use quote::{quote, format_ident};
-use syn::{parse_macro_input, ItemImpl, ImplItem, Type, Ident, Signature, FnArg, Pat, ItemStruct};
+use quote::{format_ident, quote};
+use syn::{parse_macro_input, FnArg, Ident, ImplItem, ItemImpl, ItemStruct, Pat, Signature, Type};
 
 mod data;
 mod util;
@@ -56,7 +56,7 @@ pub fn generate_dispatcher(_attrs: TokenStream, tokens: TokenStream) -> TokenStr
             }
         }
     };
-    
+
     TokenStream::from(dispatcher)
 }
 
@@ -68,14 +68,18 @@ pub fn generate_skeleton(_attrs: TokenStream, tokens: TokenStream) -> TokenStrea
     } else {
         unreachable!()
     };
-    
-    let fns: Vec<_> = parsed.items.iter().filter_map(|item| {
-        if let ImplItem::Fn(f) = item {
-            Some(&f.sig)
-        } else {
-            None
-        }
-    }).collect();
+
+    let fns: Vec<_> = parsed
+        .items
+        .iter()
+        .filter_map(|item| {
+            if let ImplItem::Fn(f) = item {
+                Some(&f.sig)
+            } else {
+                None
+            }
+        })
+        .collect();
 
     let skeleton = generate_skeleton_impl(&parsed, struct_ident, &fns);
     let args_structs = generate_args_structs(&fns);
@@ -111,7 +115,9 @@ fn generate_execute_method(fns: &[&Signature]) -> proc_macro2::TokenStream {
 }
 
 fn generate_skeleton_impl(
-    input: &ItemImpl, struct_ident: &Ident, fns: &[&Signature]
+    input: &ItemImpl,
+    struct_ident: &Ident,
+    fns: &[&Signature],
 ) -> proc_macro2::TokenStream {
     let execute_method = generate_execute_method(fns);
     let skeleton_methods = fns.iter().map(|sig| {

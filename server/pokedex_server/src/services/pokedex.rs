@@ -3,7 +3,10 @@ use std::str::FromStr;
 use pokedex_macros::generate_skeleton;
 use sqlite3::State;
 
-use crate::{model::{user::User, pokemon::Pokemon, pokemon_type::Type}, database::CONNECTION};
+use crate::{
+    database::CONNECTION,
+    model::{pokemon::Pokemon, pokemon_type::Type, user::User},
+};
 
 use super::authenticator::Authenticator;
 
@@ -12,7 +15,7 @@ pub struct Pokedex;
 #[generate_skeleton]
 impl Pokedex {
     pub fn add_pokemon(user: User, pokemon: Pokemon) -> Result<(), String> {
-        let found_pokemons = Self::search_pokemon(user.clone(), pokemon.name.clone())?;
+        let found_pokemons = Self::search_pokemon(user.clone(), pokemon.name.clone(), true)?;
 
         println!("[{}]: add_pokemon({:?})", user.username, pokemon);
 
@@ -28,15 +31,17 @@ impl Pokedex {
             );"
         ).unwrap();
 
-        let types = pokemon.types
+        let types = pokemon
+            .types
             .iter()
-            .map(|t| { t.to_string() })
+            .map(|t| t.to_string())
             .collect::<Vec<_>>()
             .join(", ");
 
-        let weakness = pokemon.weakness
+        let weakness = pokemon
+            .weakness
             .iter()
-            .map(|t| { t.to_string() })
+            .map(|t| t.to_string())
             .collect::<Vec<_>>()
             .join(", ");
 
@@ -56,42 +61,56 @@ impl Pokedex {
         Ok(())
     }
 
-    pub fn search_pokemon(user: User, name: String) -> Result<Vec<Pokemon>, String> {
+    pub fn search_pokemon(
+        user: User,
+        name: String,
+        is_exact: bool,
+    ) -> Result<Vec<Pokemon>, String> {
         Authenticator::login(user.clone())?;
 
         println!("[{}]: search_pokemon('{}')", user.username, name);
 
         let db = CONNECTION.lock().unwrap();
 
-        let mut statement = db.connection.prepare(
-            "SELECT * FROM pokemon 
+        let mut statement = db
+            .connection
+            .prepare(
+                "SELECT * FROM pokemon 
             WHERE pokemon.user_username = ?
-            AND UPPER(pokemon.name) LIKE UPPER(?);"
-        ).unwrap();
+            AND UPPER(pokemon.name) LIKE UPPER(?);",
+            )
+            .unwrap();
 
         statement.bind(1, user.username.as_str()).unwrap();
-        statement.bind(2, format!("%{name}%").as_str()).unwrap();
+
+        if is_exact {
+            statement.bind(2, format!("{name}").as_str()).unwrap();
+        } else {
+            statement.bind(2, format!("%{name}%").as_str()).unwrap();
+        }
 
         let mut pokemons = Vec::new();
         while let State::Row = statement.next().unwrap() {
             let pokemon = Pokemon {
                 name: statement.read(1).unwrap(),
-                types: statement.read::<String>(2)
+                types: statement
+                    .read::<String>(2)
                     .unwrap()
                     .split(", ")
-                    .map(|t| { Type::from_str(t).unwrap() })
+                    .map(|t| Type::from_str(t).unwrap())
                     .collect(),
-                weakness: statement.read::<String>(3)
+                weakness: statement
+                    .read::<String>(3)
                     .unwrap()
                     .split(", ")
-                    .map(|w| { Type::from_str(w).unwrap() })
+                    .map(|w| Type::from_str(w).unwrap())
                     .collect(),
                 hp: statement.read::<i64>(4).unwrap() as i32,
                 attack: statement.read::<i64>(5).unwrap() as i32,
                 defense: statement.read::<i64>(6).unwrap() as i32,
                 special_atk: statement.read::<i64>(7).unwrap() as i32,
                 special_def: statement.read::<i64>(8).unwrap() as i32,
-                speed: statement.read::<i64>(9).unwrap() as i32
+                speed: statement.read::<i64>(9).unwrap() as i32,
             };
 
             pokemons.push(pokemon);
@@ -101,18 +120,19 @@ impl Pokedex {
     }
 
     fn remove_pokemon(user: User, name: String) -> Result<(), String> {
-        let found_pokemons = Self::search_pokemon(user.clone(), name.clone())?;
+        let found_pokemons = Self::search_pokemon(user.clone(), name.clone(), true)?;
 
         println!("[{}]: remove_pokemon('{}')", user.username, name);
-        
+
         if found_pokemons.is_empty() {
-            return Err("Pokémon não existe".to_string())
+            return Err("Pokémon não existe".to_string());
         }
 
         let db = CONNECTION.lock().unwrap();
-        let mut statement = db.connection.prepare(
-            "DELETE FROM pokemon WHERE pokemon.user_username = ? AND pokemon.name = ?;"
-        ).unwrap();
+        let mut statement = db
+            .connection
+            .prepare("DELETE FROM pokemon WHERE pokemon.user_username = ? AND pokemon.name = ?;")
+            .unwrap();
 
         statement.bind(1, user.username.as_str()).unwrap();
         statement.bind(2, name.as_str()).unwrap();

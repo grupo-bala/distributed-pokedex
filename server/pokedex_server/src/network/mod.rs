@@ -1,4 +1,4 @@
-pub mod message;
-pub mod server;
 pub mod dispatcher;
+pub mod message;
 mod result;
+pub mod server;

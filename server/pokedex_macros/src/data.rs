@@ -1,14 +1,14 @@
-use syn::{Ident, parse::Parse, Token};
+use syn::{parse::Parse, Ident, Token};
 
 #[derive(Debug)]
 pub struct DispatcherArgs {
-    pub structs: Vec<Ident>
+    pub structs: Vec<Ident>,
 }
 
 impl Parse for DispatcherArgs {
     fn parse(input: syn::parse::ParseStream) -> syn::Result<Self> {
         let mut idents = Vec::new();
-        
+
         loop {
             if input.is_empty() {
                 break;
@@ -21,12 +21,8 @@ impl Parse for DispatcherArgs {
             }
 
             input.parse::<Token![,]>()?;
-        };
+        }
 
-        Ok(
-            DispatcherArgs {
-                structs: idents
-            }
-        )
+        Ok(DispatcherArgs { structs: idents })
     }
 }

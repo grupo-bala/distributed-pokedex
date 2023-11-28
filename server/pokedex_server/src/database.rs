@@ -4,7 +4,7 @@ use lazy_static::lazy_static;
 use sqlite3::Connection;
 
 pub struct DBConnection {
-    pub connection: Connection
+    pub connection: Connection,
 }
 
 impl DBConnection {

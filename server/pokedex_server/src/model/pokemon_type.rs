@@ -1,5 +1,5 @@
 use derive_more::Display;
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 use strum::EnumString;
 
 #[derive(Debug, Clone, Display, Serialize, Deserialize, EnumString)]

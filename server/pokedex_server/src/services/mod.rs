@@ -1,2 +1,2 @@
-pub mod pokedex;
 pub mod authenticator;
+pub mod pokedex;
