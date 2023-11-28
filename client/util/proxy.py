@@ -57,7 +57,9 @@ class Proxy(metaclass=SingletonMeta):
                 if timeout_error_count == 5:
                     logger.error("Proxy - timeout na operação: 5 tentativas")
 
-                    raise Exception("O servidor não está respondendo no momento, tente novamente mais tarde.")
+                    raise Exception(
+                        "O servidor não está respondendo no momento, tente novamente mais tarde."
+                    )
 
                 logger.error("Proxy - timeout na operação")
 

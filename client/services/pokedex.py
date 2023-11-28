@@ -9,7 +9,9 @@ class Pokedex:
 
     def search_pokemon(self, user: User, pokemon_name: str):
         result = proxy.do_operation(
-            "Pokedex", "search_pokemon", {"user": user, "name": pokemon_name}
+            "Pokedex",
+            "search_pokemon",
+            {"user": user, "name": pokemon_name, "is_exact": False},
         )
 
         if not result:
