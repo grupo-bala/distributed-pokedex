@@ -10,6 +10,8 @@ from termcolor import cprint
 pokedex = Pokedex()
 auth = Authenticator()
 
+terminal.clear_terminal()
+
 cprint("Bem-vindo a ", end="")
 cprint("Pokedex!", "red", end="\n\n")
 
@@ -110,6 +112,8 @@ while True:
 
 
 def add_pokemon():
+    terminal.clear_terminal()
+
     print("Digite o nome do pokemon que será adicionado na ", end="")
     cprint("Pokedex: ", "red", end="")
 
@@ -117,19 +121,19 @@ def add_pokemon():
 
     terminal.clear_terminal()
 
-    print("Tipos possíveis: ", end="")
-
-    list_types()
-
-    print()
-
     pokemon_type = []
 
     while True:
+        print("Tipos possíveis: ", end="")
+
+        list_types()
+
+        print()
+
         pokemon_type = [
             tp.upper()
             for tp in input(
-                f"Digite os tipos do {pokemon_name} separados por vírgula: "
+                f"Digite os tipos do {pokemon_name} separados por vírgula e sem espaços: "
             ).split(",")
         ]
 
@@ -141,7 +145,7 @@ def add_pokemon():
 
                 terminal.clear_terminal()
 
-                cprint("Tipo inválido, tente novamente!\n\n", "red")
+                cprint("Tipo inválido, tente novamente!\n", "red")
 
                 input("Pressione enter para continuar...")
 
@@ -154,19 +158,19 @@ def add_pokemon():
 
     terminal.clear_terminal()
 
-    print("Tipos possíveis: ", end="")
-
-    list_types()
-
-    print()
-
     weakness = []
 
     while True:
+        print("Tipos possíveis: ", end="")
+
+        list_types()
+
+        print()
+
         weakness = [
             tp.upper()
             for tp in input(
-                f"Digite os tipos que o {pokemon_name} é fraco contra separados por vírgula: "
+                f"Digite os tipos que o {pokemon_name} é fraco contra separados por vírgula e sem espaços: "
             ).split(",")
         ]
 
@@ -178,7 +182,7 @@ def add_pokemon():
 
                 terminal.clear_terminal()
 
-                cprint("Tipo inválido, tente novamente!\n\n", "red")
+                cprint("Tipo inválido, tente novamente!\n", "red")
 
                 input("Pressione enter para continuar...")
 
@@ -217,7 +221,7 @@ def add_pokemon():
     try:
         pokedex.add_pokemon(user, pokemon)
 
-        cprint("Pokemon adicionado!", "green")
+        cprint("Pokemon adicionado!\n", "green")
 
         input("Pressione enter para continuar...")
     except Exception as e:
@@ -227,6 +231,8 @@ def add_pokemon():
 
 
 def remove_pokemon():
+    terminal.clear_terminal()
+
     pokemon_name = input("Nome do pokemon(deve ser o exato nome): ").lower()
 
     terminal.clear_terminal()
@@ -234,9 +240,9 @@ def remove_pokemon():
     try:
         pokedex.remove_pokemon(user, pokemon_name)
 
-        cprint("Pokemon removido!", "green")
+        cprint("Pokemon removido!\n", "green")
     except Exception as e:
-        cprint(f"{str(e)}\n\n", "red")
+        cprint(f"{str(e)}\n", "red")
 
     input("Pressione enter para continuar...")
 
@@ -254,11 +260,11 @@ def search_pokemon():
         pokemons = pokedex.search_pokemon(user, pokemon_name)
 
         if len(pokemons) == 0:
-            cprint("Nenhum pokemon encontrado!", "red")
+            cprint("Nenhum pokemon encontrado!\n", "red")
         else:
             terminal.print_pokemons(2, pokemons)
     except Exception as e:
-        cprint(f"{str(e)}\n\n", "red")
+        cprint(f"{str(e)}\n", "red")
 
     input("Pressione enter para continuar...")
 
@@ -280,7 +286,7 @@ while True:
         break
     else:
         terminal.clear_terminal()
-        cprint("Opção inválida!\n\n", "red")
+        cprint("Opção inválida!\n", "red")
 
         input(
             "As opções válidas são adicionar, remover, buscar ou sair! Pressione enter para continuar..."
