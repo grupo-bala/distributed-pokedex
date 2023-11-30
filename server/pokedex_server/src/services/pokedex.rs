@@ -84,7 +84,7 @@ impl Pokedex {
         statement.bind(1, user.username.as_str()).unwrap();
 
         if is_exact {
-            statement.bind(2, format!("{name}").as_str()).unwrap();
+            statement.bind(2, name.to_string().as_str()).unwrap();
         } else {
             statement.bind(2, format!("%{name}%").as_str()).unwrap();
         }

@@ -6,12 +6,12 @@ from network.result import Result
 from loguru import logger
 import jsonpickle
 
-dup_messages = False
-
-
 class Proxy(metaclass=SingletonMeta):
+    messages_count = 0
+
     def do_operation(self, object_reference: str, method_id: str, args: dict) -> dict:
         logger.info(f"Proxy - operação: {object_reference} | {method_id} | {args}")
+        Proxy.messages_count += 1
 
         encoded_args = jsonpickle.encode(args, unpicklable=False)
         packed_msg, msg_id = self.__pack_message(
@@ -22,7 +22,7 @@ class Proxy(metaclass=SingletonMeta):
 
         client.send_message(packed_msg)
 
-        if dup_messages:
+        if Proxy.messages_count % 2 == 1:
             client.send_message(packed_msg)
 
         timeout_error_count = 0
@@ -33,9 +33,11 @@ class Proxy(metaclass=SingletonMeta):
                 unpacked_msg: Message = self.__unpack_message(reply)
 
                 if unpacked_msg.id != msg_id:
-                    logger.error(
-                        "Proxy - ID da mensagem inválido! Unpacked message id: {unpacked_msg.id}, id esperado: {msg_id}"
-                    )
+                    # logger.error(
+                    #     "Proxy - ID da mensagem inválido! Unpacked message id: {unpacked_msg.id}, id esperado: {msg_id}"
+                    # )
+
+                    print("Proxy - ID da mensagem inválido! Unpacked message id: {unpacked_msg.id}, id esperado: {msg_id}")
 
                     continue
 
@@ -61,7 +63,8 @@ class Proxy(metaclass=SingletonMeta):
                         "O servidor não está respondendo no momento, tente novamente mais tarde."
                     )
 
-                logger.error("Proxy - timeout na operação")
+                # logger.error("Proxy - timeout na operação")
+                print("Proxy - timeout na operação")
 
                 client.send_message(packed_msg)
 

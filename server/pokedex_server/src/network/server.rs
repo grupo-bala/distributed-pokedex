@@ -8,17 +8,17 @@ use super::{dispatcher::Dispatcher, message::Message};
 pub struct Server {
     last_request: HashMap<SocketAddr, (i32, String)>,
     socket: UdpSocket,
-    is_error_env: bool,
+    request_count: i32,
 }
 
 impl Server {
-    pub fn new(addr: &str, is_error_env: bool) -> Self {
+    pub fn new(addr: &str) -> Self {
         let socket = UdpSocket::bind(addr).expect("Não foi possível inicializar o socket UDP");
 
         Server {
             last_request: HashMap::new(),
             socket,
-            is_error_env,
+            request_count: 0,
         }
     }
 
@@ -29,9 +29,8 @@ impl Server {
             match self.socket.recv_from(&mut buf) {
                 Err(e) => println!("Falha no recebimento: {:?}", e),
                 Ok((_, addr)) => {
-                    if !self.is_error_env {
-                        self.handle_request(&addr, &String::from_utf8(buf.to_vec()).unwrap());
-                    }
+                    self.request_count += 1;
+                    self.handle_request(&addr, &String::from_utf8(buf.to_vec()).unwrap());
                 }
             }
         }
@@ -42,7 +41,7 @@ impl Server {
         let message: Message = serde_json::from_str(request).unwrap();
 
         if self.handle_duplicate(addr, message.id) {
-            println!("[{addr:?}]: mensagem duplicada");
+            println!("[{addr:?}]: mensagem duplicada, enviando último resultado");
             self.socket
                 .send_to(self.last_request.get(addr).unwrap().1.as_bytes(), addr)
                 .unwrap();
@@ -52,6 +51,11 @@ impl Server {
 
         let result = Dispatcher::execute(&message);
         self.last_request.insert(*addr, (message.id, result.clone()));
+
+        if self.request_count % 2 == 0 {
+            return;
+        }
+
         self.socket.send_to(result.as_bytes(), addr).unwrap();
     }
 
