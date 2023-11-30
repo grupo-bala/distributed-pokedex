@@ -176,7 +176,7 @@ def add_pokemon():
 
         has_invalid_type = False
 
-        for type in pokemon_type:
+        for type in weakness:
             if type not in get_types():
                 has_invalid_type = True
 
