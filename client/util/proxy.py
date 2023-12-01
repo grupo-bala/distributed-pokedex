@@ -22,7 +22,7 @@ class Proxy(metaclass=SingletonMeta):
 
         client.send_message(packed_msg)
 
-        if Proxy.messages_count % 2 == 1:
+        if Proxy.messages_count % 2 == 0:
             client.send_message(packed_msg)
 
         timeout_error_count = 0
